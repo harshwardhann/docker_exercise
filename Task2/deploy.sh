@@ -1,10 +1,10 @@
 #!/bin/bash
 # remove running containers
-docker rm -f $(docker ps -qa)
+docker rm -f $(docker ps -qa) || sleep 1
 # create a network
-docker network create trio-task-network
+docker network create trio-task-network || sleep 1
 #create a volume
-docker volume create new-volume
+docker volume create new-volume || sleep 1 
 # build flask and mysql
 docker build -t trio-task-mysql:5.7 db
 docker build -t trio-task-flask-app:latest flask-app
@@ -15,7 +15,7 @@ docker run -d \
     trio-task-mysql:5.7
 # run flask container
 docker run -d \
-    -e MYSQL_ROOT_PASSWORD=password \
+    -e MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD} \
     --name flask-app \
     --network trio-task-network \
     trio-task-flask-app:latest
